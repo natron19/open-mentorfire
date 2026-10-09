@@ -1,0 +1,19 @@
+# Per-app guardrail configuration, read by AiGuardConfig.
+# See docs/ai-guardrails.md (Layer 5: AiOutputGuard) and docs/ai-evals.md.
+
+# A mentor describing their own experience to draft a Program is not where personal distress shows up; not
+# crisis-aware.
+crisis_terms: []
+
+# Output structure rules per AiTemplate name. Templates not listed get the
+# generic output checks only (non-empty, no prompt leak, no profanity, no new PII).
+#   format:        text | json
+#   required_keys: top-level keys the JSON object must contain
+templates:
+  health_ping:
+    format: text
+  # ProgramDraftsController#parse_program! reads these six keys, all always present. The parser checks the shapes
+  # and counts, and ProgramRulesCheck the hard rules (session count, agenda minutes, assignee).
+  mentorfire_program_v1:
+    format: json
+    required_keys: [name, purpose, outcome_statement, sessions, tasks, first_intro_questions]

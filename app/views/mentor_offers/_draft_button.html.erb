@@ -1,0 +1,15 @@
+<%# The one button that runs mentorfire_program_v1. The generating controller swaps it for a spinner while Gemini works. %>
+<div data-controller="generating"
+     data-action="turbo:submit-start->generating#start turbo:submit-end->generating#stop">
+  <div data-generating-target="form">
+    <%= button_to label, mentor_offer_program_drafts_path(mentor_offer), method: :post, class: button_class %>
+  </div>
+  <div data-generating-target="overlay" class="d-none">
+    <div class="d-flex align-items-center gap-2">
+      <div class="spinner-border spinner-border-sm text-secondary" role="status">
+        <span class="visually-hidden">Drafting…</span>
+      </div>
+      <span class="text-muted small">Drafting your Program&hellip;</span>
+    </div>
+  </div>
+</div>

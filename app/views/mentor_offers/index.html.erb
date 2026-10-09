@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="h3 mb-0">What I could mentor</h1>
+  <%= link_to "New offer", new_mentor_offer_path, class: "btn btn-primary btn-sm" %>
+</div>
+
+<% if @mentor_offers.empty? %>
+  <div class="text-center py-5">
+    <p class="text-muted mb-3">You haven&rsquo;t offered to mentor anything yet.</p>
+    <%= link_to "Write your first offer", new_mentor_offer_path, class: "btn btn-primary" %>
+  </div>
+<% else %>
+  <div class="row g-3">
+    <% @mentor_offers.each do |offer| %>
+      <% draft = offer.latest_program_draft %>
+      <div class="col-12">
+        <%= link_to mentor_offer_path(offer), class: "text-decoration-none" do %>
+          <div class="card card-hover">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start gap-3">
+                <div>
+                  <h2 class="h5 card-title mb-1 text-body"><%= offer.subject %></h2>
+                  <p class="text-muted small mb-0"><%= offer.shape_label %></p>
+                </div>
+                <div class="text-end small flex-shrink-0">
+                  <% if draft&.completed? %>
+                    <div class="mb-1"><span class="badge program-badge"><%= draft.name.truncate(48) %></span></div>
+                    <div class="text-muted">drafted <%= time_ago_in_words(draft.generated_at) %> ago</div>
+                  <% elsif draft&.failed? %>
+                    <div class="text-muted fst-italic">last draft could not be used</div>
+                  <% else %>
+                    <div class="text-muted fst-italic">no Program drafted yet</div>
+                  <% end %>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
+<% end %>

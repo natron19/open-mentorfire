@@ -1,0 +1,73 @@
+<div class="text-center py-5">
+  <h1 class="display-5 fw-bold"><%= ENV.fetch("APP_NAME", "MentorFire Demo") %></h1>
+  <p class="lead text-muted mt-2"><%= ENV.fetch("APP_TAGLINE", "") %></p>
+  <p class="text-muted mx-auto mt-3" style="max-width: 640px;">
+    Most mentoring is coffee with no structure, and it fizzles by the third meeting because nobody said when it
+    would end. Write down what you have actually done and who it is for. MentorFire drafts a Program from it, in
+    your voice: exactly the number of sessions you choose, an agenda for each that fits the time, starter tasks for
+    you or your mentee, and three questions for a first intro. It never invents a credential and never judges
+    anyone.
+  </p>
+  <div class="mt-4 d-flex justify-content-center gap-3">
+    <% if signed_in? %>
+      <%= link_to "Go to my offers", mentor_offers_path, class: "btn btn-primary btn-lg" %>
+    <% else %>
+      <%= link_to "Try it free", sign_up_path, class: "btn btn-primary btn-lg" %>
+      <%= link_to "Sign in", sign_in_path, class: "btn btn-outline-secondary btn-lg" %>
+    <% end %>
+  </div>
+</div>
+
+<hr class="my-5 opacity-25">
+
+<div class="mx-auto" style="max-width: 860px;">
+  <h2 class="h5 text-muted text-center mb-4">Example &mdash; a fictional market stallholder&rsquo;s offer</h2>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <p class="text-muted small mb-1">What I have actually done</p>
+      <p class="mb-0 fst-italic">
+        &ldquo;I ran a weekend bread stall at the Saturday market for nine years. The first summer I priced by what
+        felt fair and lost money every week until I counted what each loaf actually cost me. The worst day was the
+        October morning the canopy blew over&hellip;&rdquo;
+      </p>
+      <p class="text-muted small mt-2 mb-0">4 sessions of 60 minutes</p>
+    </div>
+  </div>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <h3 class="h5 mb-2">A first season behind the stall</h3>
+      <blockquote class="outcome small mb-0">
+        By the last session, the mentee has priced their goods from what each one costs, traded a Saturday, and keeps
+        a notebook that tells them what to bring next week.
+      </blockquote>
+    </div>
+  </div>
+
+  <ol class="session-timeline list-unstyled small mb-3">
+    <li class="session-step"><strong>1. What each loaf really costs</strong> <span class="text-muted">&middot; 60 of 60 min</span></li>
+    <li class="session-step"><strong>2. Setting up for the weather</strong> <span class="text-muted">&middot; 60 of 60 min</span></li>
+    <li class="session-step"><strong>3. The first Saturday, read back</strong> <span class="text-muted">&middot; 60 of 60 min</span></li>
+    <li class="session-step"><strong>4. Running it alone</strong> <span class="text-muted">&middot; 55 of 60 min</span></li>
+  </ol>
+
+  <ul class="list-unstyled small mb-0">
+    <li class="mb-1"><span class="badge assignee-badge assignee-mentee me-1">mentee</span> Price every item on the list from its cost, time counted</li>
+    <li class="mb-1"><span class="badge assignee-badge assignee-mentor me-1">mentor</span> Stop by the stall on the first Saturday for ten minutes, to watch rather than help</li>
+  </ul>
+
+  <p class="text-center text-muted small mt-4">
+    AI-generated. A first draft for the mentor to edit, built only from their words. It never judges anyone.
+  </p>
+</div>
+
+<div class="text-center mt-5 pb-4">
+  <% unless signed_in? %>
+    <%= link_to "Draft your own Program &rarr;".html_safe, sign_up_path, class: "btn btn-primary" %>
+  <% end %>
+  <div class="mt-3 text-muted small">
+    Open source &middot;
+    <a href="https://mentorfire.com" class="text-muted">MentorFire</a>
+  </div>
+</div>

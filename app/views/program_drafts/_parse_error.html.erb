@@ -1,0 +1,11 @@
+<div class="alert alert-warning">
+  <strong>The AI&rsquo;s draft could not be used.</strong>
+  <p class="mb-1"><%= draft.failure_reason %>.</p>
+  <p class="mb-2 small">
+    The answer did not match the expected shape or broke one of this Program&rsquo;s rules: exactly the number of
+    sessions you asked for, every agenda inside the session length, and every task given to the mentor or the
+    mentee. Draft again, or edit the template in the admin panel to tighten the instructions.
+  </p>
+  <%= render "mentor_offers/draft_button", mentor_offer: mentor_offer, label: "Retry",
+             button_class: "btn btn-outline-warning btn-sm" %>
+</div>

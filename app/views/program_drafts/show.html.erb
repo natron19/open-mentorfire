@@ -1,0 +1,126 @@
+<% draft = @program_draft %>
+<div data-controller="download-markdown"
+     data-download-markdown-content-value="<%= draft.completed? ? draft.to_markdown : '' %>"
+     data-download-markdown-filename-value="<%= draft.markdown_filename %>"
+     style="max-width: 900px;">
+
+  <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 mb-3">
+    <div>
+      <p class="text-muted small mb-1">Program draft &middot; <%= @mentor_offer.subject %></p>
+      <h1 class="h3 mb-1"><%= draft.completed? ? draft.name : @mentor_offer.subject %></h1>
+      <p class="text-muted small mb-0">
+        <%= link_to "← What I could mentor", mentor_offers_path, class: "text-muted" %>
+        &nbsp;&middot;&nbsp;
+        <%= link_to "The offer", mentor_offer_path(@mentor_offer), class: "text-muted" %>
+        &nbsp;&middot;&nbsp;
+        Drafted <%= draft.generated_at ? "#{time_ago_in_words(draft.generated_at)} ago" : "at an unknown time" %>
+      </p>
+    </div>
+    <div class="d-flex flex-wrap gap-2 align-items-start">
+      <%= link_to "Edit offer", edit_mentor_offer_path(@mentor_offer), class: "btn btn-outline-secondary btn-sm" %>
+      <%= render "mentor_offers/draft_button", mentor_offer: @mentor_offer, label: "Draft again",
+                 button_class: "btn btn-outline-secondary btn-sm" %>
+      <% if draft.completed? %>
+        <button class="btn btn-outline-primary btn-sm" type="button"
+                data-action="click->download-markdown#download">
+          Download .md
+        </button>
+      <% end %>
+      <button class="btn btn-outline-secondary btn-sm" type="button"
+              data-bs-toggle="collapse" data-bs-target="#raw-response"
+              aria-expanded="false" aria-controls="raw-response">
+        Show raw response
+      </button>
+    </div>
+  </div>
+
+  <p class="text-muted small mb-3">
+    <strong>AI-generated.</strong> A first draft of your Program, built only from what you wrote. It never judges
+    you or anyone you might mentor, and it can be wrong. Change anything that does not sound like your own years.
+  </p>
+
+  <% if draft.stale? %>
+    <div class="alert alert-warning py-2 small">
+      Your offer has changed since this draft. Draft again to see the new version.
+    </div>
+  <% end %>
+
+  <% if draft.failed? %>
+    <%= render "program_drafts/parse_error", mentor_offer: @mentor_offer, draft: draft %>
+  <% elsif draft.completed? %>
+    <div class="card mb-4">
+      <div class="card-body">
+        <p class="mb-3"><%= draft.purpose %></p>
+        <blockquote class="outcome mb-0"><%= draft.outcome_statement %></blockquote>
+      </div>
+    </div>
+
+    <h2 class="h5 mb-3">
+      <%= draft.sessions.size %> sessions of <%= draft.session_minutes %> minutes
+    </h2>
+    <ol class="session-timeline list-unstyled mb-4">
+      <% draft.sessions.each do |session| %>
+        <li class="session-step">
+          <div class="card">
+            <div class="card-body">
+              <div class="d-flex justify-content-between align-items-start gap-3 mb-1">
+                <h3 class="h6 mb-0">Session <%= session["number"] %>: <%= session["title"] %></h3>
+                <span class="text-muted small flex-shrink-0">
+                  <%= draft.agenda_minutes(session) %> of <%= draft.session_minutes %> min
+                </span>
+              </div>
+              <p class="text-muted small mb-2"><%= session["aim"] %></p>
+              <table class="table table-sm agenda mb-2">
+                <tbody>
+                  <% session["agenda"].each do |entry| %>
+                    <tr>
+                      <td class="text-muted agenda-minutes"><%= entry["minutes"] %> min</td>
+                      <td><%= entry["item"] %></td>
+                    </tr>
+                  <% end %>
+                </tbody>
+              </table>
+              <% session_tasks = draft.tasks_for(session["number"]) %>
+              <% if session_tasks.any? %>
+                <p class="small text-muted mb-1">Tasks for this session</p>
+                <ul class="list-unstyled small mb-0">
+                  <%= render partial: "program_drafts/task", collection: session_tasks, as: :task %>
+                </ul>
+              <% end %>
+            </div>
+          </div>
+        </li>
+      <% end %>
+    </ol>
+
+    <div class="row g-4 mb-4">
+      <div class="col-md-6">
+        <h2 class="h5 mb-2">Any time during the Program</h2>
+        <% if draft.program_level_tasks.any? %>
+          <ul class="list-unstyled small mb-0">
+            <%= render partial: "program_drafts/task", collection: draft.program_level_tasks, as: :task %>
+          </ul>
+        <% else %>
+          <p class="text-muted small mb-0">Every task is placed on a session.</p>
+        <% end %>
+      </div>
+      <div class="col-md-6">
+        <h2 class="h5 mb-2">Three questions for the first intro</h2>
+        <ol class="small mb-0">
+          <% draft.first_intro_questions.each do |question| %>
+            <li class="mb-1"><%= question %></li>
+          <% end %>
+        </ol>
+      </div>
+    </div>
+  <% else %>
+    <p class="text-muted fst-italic">This draft is still running&hellip;</p>
+  <% end %>
+
+  <div class="collapse mt-3" id="raw-response">
+    <div class="card card-body">
+      <p class="text-muted small mb-1">Raw response from Gemini:</p>
+      <pre class="small mb-0 text-muted"><%= draft.gemini_raw %></pre>
+    </div>
+  </div>
+</div>
